@@ -1,0 +1,37 @@
+# Testing Actions with a basic workflow
+# Controls when the action will run. Invokes the workflow on push events but only for the main branch
+name: Assume AWS Role
+on:
+  push:
+    branches:
+      - main
+jobs:
+  assume-role:
+    name: Assume Role
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::581577752758:role/data-integration-role
+          aws-region: us-east-1
+      - name: Verify Assumed Role
+        run: aws sts get-caller-identity
+  deploy:
+    name: Testing Upload to S3
+    runs-on: ubuntu-latest
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Configure AWS credentials from Test account
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::581577752758:role/data-integration-role
+        aws-region: us-east-1
+    - name: Copy files to the test website with the AWS CLI
+      run: |
+        aws s3 ls . s3://s3-landing-raw
