@@ -52,6 +52,7 @@ jobs:
       id-token: write
       contents: read
     steps:
+      - uses: actions/checkout@v2
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -61,13 +62,11 @@ jobs:
         run: aws sts get-caller-identity
 
       - name: Open Web Client Directory
-        uses: actions/checkout@v2
         run: |
           ls -la
           echo "files under "
           ls
 
       - name: Deploy Lambda Functions
-        uses: actions/checkout@v2
         run: |
           ./deploy.sh
