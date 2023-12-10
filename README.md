@@ -11,4 +11,8 @@ In case the user wants to keep everything encapsulated, he can do this in the fo
 
 # References for building this repository
 
-(How to add github federated identity) https://aws.amazon.com/pt/blogs/security/use-iam-roles-to-connect-github-actions-to-actions-in-aws/
+- (AWS - How to add github federated identity) https://aws.amazon.com/pt/blogs/security/use-iam-roles-to-connect-github-actions-to-actions-in-aws/
+- (Github - How to configure AWS Credentials) 
+https://github.com/aws-actions/configure-aws-credentials
+- (Github - Configure the Identity Provider)
+https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services
