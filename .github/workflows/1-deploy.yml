@@ -67,4 +67,5 @@ jobs:
           ls
 
       - name: Deploy Lambda Functions
-        run: ./deploy.sh
+        run: |
+          ./deploy.sh
