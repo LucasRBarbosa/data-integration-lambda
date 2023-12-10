@@ -67,5 +67,6 @@ jobs:
           ls
 
       - name: Deploy Lambda Functions
+      - uses: actions/checkout@v2
         run: |
           ./deploy.sh
