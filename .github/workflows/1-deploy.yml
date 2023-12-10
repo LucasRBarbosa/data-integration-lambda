@@ -68,8 +68,9 @@ jobs:
           ls
 
       - name: Running CHMOD to deploy script
-      - run: |
-          chmod +x ./deploy.sh   
+        run: |
+          chmod +x ./deploy.sh
+  
       - name: Deploy Lambda Functions
         run: |
           ./deploy.sh
