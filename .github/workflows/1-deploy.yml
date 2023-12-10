@@ -67,6 +67,9 @@ jobs:
           echo "files under "
           ls
 
+      - name: Running CHMOD to deploy script
+      - run: |
+          chmod +x ./deploy.sh   
       - name: Deploy Lambda Functions
         run: |
           ./deploy.sh
