@@ -1,4 +1,6 @@
 #!/bin/bash
+# Make the script executable
+chmod +x deploy.sh
 
 # Set the directory where the Lambda function code is stored
 FUNCTIONS_DIR="./apps"

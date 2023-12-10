@@ -2,9 +2,11 @@
 # Controls when the action will run. Invokes the workflow on push events but only for the main branch
 name: Assume AWS Role
 on:
-  push:
+  pull_request:
     branches:
       - main
+    types: [opened]
+    
 jobs:
   assume-role:
     name: Assume Role
