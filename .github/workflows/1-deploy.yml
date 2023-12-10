@@ -61,12 +61,13 @@ jobs:
         run: aws sts get-caller-identity
 
       - name: Open Web Client Directory
+        uses: actions/checkout@v2
         run: |
           ls -la
           echo "files under "
           ls
 
       - name: Deploy Lambda Functions
-      - uses: actions/checkout@v2
+        uses: actions/checkout@v2
         run: |
           ./deploy.sh
