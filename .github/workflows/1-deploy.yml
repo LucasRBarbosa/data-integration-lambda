@@ -40,7 +40,7 @@ jobs:
     - name: Configure AWS credentials from Test account
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        role-to-assume: arn:aws:iam::581577752758:role/data-integration-role
+        role-to-assume: ${{secrets.ROLE_ARN}}
         aws-region: us-east-1
     - name: Copy files to the test website with the AWS CLI
       run: |
@@ -61,7 +61,7 @@ jobs:
       - name: Verify Assumed Role
         run: aws sts get-caller-identity
 
-      - name: Open Web Client Directory
+      - name: Listing files under a given Directory
         run: |
           ls -la
           echo "files under "
@@ -69,7 +69,7 @@ jobs:
 
       - name: Running CHMOD to deploy script
         run: |
-          chmod +x ./deploy.sh
+          chmod +x ./main.sh
   
       - name: Deploy Lambda Functions
         run: |
