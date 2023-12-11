@@ -19,7 +19,7 @@ ROLE_ARN="arn:aws:iam::581577752758:role/data-integration-role"
 FUNCTION_DIR="./apps/_demo-hello-world/"
 
 # Create the Lambda function
-aws lambda create-function --function-name $FUNCTION_NAME --zip-file "./apps/_demo-hello-world/HelloWorld.zip" --handler $HANDLER --runtime $RUNTIME --role $ROLE_ARN --region $AWS_REGION
+aws lambda create-function --function-name $FUNCTION_NAME --zip-file "./apps/_demo-hello-world/" --handler $HANDLER --runtime $RUNTIME --role $ROLE_ARN --region $AWS_REGION
 
 # Verify the function creation
 aws lambda get-function --function-name $FUNCTION_NAME --region $AWS_REGION
