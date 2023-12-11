@@ -16,7 +16,7 @@ RUNTIME="python3.8"
 ROLE_ARN="arn:aws:iam::581577752758:role/data-integration-role"
 
 # Set the function code directory
-FUNCTION_DIR="$(pwd)/apps/_demo-hello-world/"
+FUNCTION_DIR="$(pwd)/apps/_demo-hello-world/HelloWorld.zip"
 
 # Create the Lambda function
 aws lambda create-function --function-name $FUNCTION_NAME --zip-file "fileb://$FUNCTION_DIR" --handler $HANDLER --runtime $RUNTIME --role $ROLE_ARN --region $AWS_REGION
