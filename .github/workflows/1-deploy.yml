@@ -73,4 +73,4 @@ jobs:
   
       - name: Deploy Lambda Functions
         run: |
-          bash ./deploy.sh
+          bash ./main.sh
