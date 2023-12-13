@@ -1,4 +1,4 @@
-name: Update Function Code
+name: 1-create-pr-workflow
 
 on:
   pull_request:
@@ -26,6 +26,10 @@ jobs:
           echo "::set-output name=set::${lambdas}"
 
   update-code:
+    permissions:
+      actions: write
+      contents: write
+      id-token: write
     needs: get-filenames
     strategy:
       matrix:

@@ -1,4 +1,4 @@
-name: 'Manual Lambda Creation Workflow'
+name: 'lambda-create-pipeline'
 
 on:
   push:
