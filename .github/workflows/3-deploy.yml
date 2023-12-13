@@ -12,8 +12,8 @@ on:
       - '*'
 
 jobs:
-  assume-role:
-    name: Assume Role
+  deploy-lambda:
+    name: Deploys Lambda Code to AWS
     runs-on: ubuntu-latest
     # These permissions are needed to interact with GitHub's OIDC Token endpoint.
     permissions:
