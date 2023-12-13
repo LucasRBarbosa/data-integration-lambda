@@ -30,7 +30,7 @@ jobs:
         id: getLambdas
         run: |
           # Use find and jq to create a JSON array of directory names
-          lambdas=$(find apps -maxdepth 1 -mindepth 1 -type d -exec echo '{}' \; | jq -R -s -c 'split("\n")[:-1] | map(sub("^apps/"; ""))')
+          lambdas=$(find apps -type d -exec basename {} \;)
           echo "::set-output name=set::${lambdas}"
 
   update-code:
@@ -64,10 +64,10 @@ jobs:
         run: |
           for lambda in ${{ matrix.lambda }}; do
             # Zip the code without including the parent directory
-            (cd "apps/${lambda}" && zip -r "../${lambda}.zip" .)
-
+            cd "apps" && zip -r "../${lambda}.zip" "${lambda}" -x "*.zip" && cd -
+            
             # Upload to S3 with the correct path
-            aws s3 cp "../${lambda}.zip" "s3://s3-landing-dev-lucas/apps/${lambda}/${lambda}.zip"
+            aws s3 cp "../${lambda}.zip" "s3://s3-landing-dev-lucas//apps/${lambda}/${lambda}.zip"
             
             # Optional: Remove the local zip file if needed
             rm "../${lambda}.zip"
