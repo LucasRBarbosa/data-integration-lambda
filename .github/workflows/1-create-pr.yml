@@ -62,7 +62,7 @@ jobs:
 
       - name: Zip and Upload Code
         run: |
-          for lambda in ${{ matrix.lambda }}; do
+          for lambda in apps/${{ matrix.lambda }}; do
             # Zip the code
             zip -r "apps/${lambda}.zip" "${lambda}"
             
