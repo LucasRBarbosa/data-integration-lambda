@@ -67,7 +67,7 @@ jobs:
             zip -r "${lambda}.zip" "apps/${lambda}/"
             
             # Upload to S3
-            aws s3 cp "${lambda}.zip" "s3://s3-landing-dev-lucas/${lambda}/${lambda}.zip"
+            aws s3 cp "${lambda}.zip" "s3://s3-landing-dev-lucas/apps/${lambda}/${lambda}.zip"
             
             # Optional: Remove the local zip file if needed
             rm "${lambda}.zip"
