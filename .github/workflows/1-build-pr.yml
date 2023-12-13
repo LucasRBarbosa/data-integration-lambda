@@ -18,14 +18,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Get functions apps
-        id: getapps
-        run: |
-          # Use find and jq to create a JSON array of directory names
-          apps=$(find apps -maxdepth 1 -mindepth 1 -type d -exec echo '{}' \; | jq -R -s -c 'split("\n")[:-1]')
-          echo "::set-output name=set::${apps}"
-
       - name: Get functions filenames
         id: getLambdas
         run: |
@@ -42,7 +34,7 @@ jobs:
     strategy:
       matrix:
         # Use the matrix directly without needing outputs
-        lambda: ${{fromJson(needs.get-filenames.outputs.set)}}
+        lambda: ${{ needs.get-filenames.outputs.set }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
