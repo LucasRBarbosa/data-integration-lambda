@@ -1,4 +1,4 @@
-name: 1-create-pr-workflow
+name: 1-build-pr-workflow
 
 on:
   pull_request:
@@ -64,7 +64,8 @@ jobs:
         run: |
           for lambda in ${{ matrix.lambda }}; do
             # Zip the code
-            zip -r "${lambda}.zip" "apps/${lambda}/"
+            
+            cd "apps/${lambda}" && zip -r "${lambda}.zip" . -x "*.zip" && cd -
             
             # Upload to S3
             aws s3 cp "${lambda}.zip" "s3://s3-landing-dev-lucas/apps/${lambda}/${lambda}.zip"
