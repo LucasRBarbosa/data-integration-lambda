@@ -30,7 +30,7 @@ jobs:
         id: getLambdas
         run: |
           # Use find and jq to create a JSON array of directory names
-          lambdas=$(find apps -type d -exec basename {} \;)
+          lambdas=$(find apps -type f -name "*.py" -exec dirname {} \; | sed 's,^apps/,,')
           echo "::set-output name=set::${lambdas}"
 
   update-code:
