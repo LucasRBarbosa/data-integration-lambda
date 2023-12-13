@@ -21,8 +21,8 @@ jobs:
       - name: Get functions filenames
         id: getLambdas
         run: |
-          lambdas=$(ls -d apps/*/ | sed 's/\/$//')
-          # Corrected syntax for setting matrix output
+          # Use find and jq to create a JSON array of directory names
+          lambdas=$(find apps -maxdepth 1 -mindepth 1 -type d -exec echo '{}' \; | jq -R -s -c 'split("\n")[:-1]')
           echo "::set-output name=set::${lambdas}"
 
   update-code:
