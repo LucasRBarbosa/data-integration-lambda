@@ -56,11 +56,11 @@ jobs:
         run: |
           for lambda in ${{ steps.getLambdas.outputs.set }}; do
             # Zip the code without including the parent directory
-            cd "apps" && zip -r "../${lambda}.zip" "${lambda}" -x "*.zip" && cd -
+            cd "apps/${lambda}" && zip -r "../../${lambda}.zip" . -x "*.zip" && cd -
             
             # Upload to S3 with the correct path
-            aws s3 cp "../${lambda}.zip" "s3://s3-landing-dev-lucas//apps/${lambda}/${lambda}.zip"
+            aws s3 cp "../../${lambda}.zip" "s3://s3-landing-dev-lucas//apps/${lambda}/${lambda}.zip"
             
-            # Optional: Remove the local zip file if needed
-            rm "../${lambda}.zip"
+            # Remove the local zip file
+            rm "../../${lambda}.zip"
           done
