@@ -54,7 +54,7 @@ jobs:
 
       - name: Zip and Upload Code
         run: |
-          for lambda in ; do
+          for lambda in ${{ needs.get-filenames.outputs.set }}; do
             # Zip the code without including the parent directory
             cd "apps/${lambda}/" && zip -r "${lambda}.zip" .
             
