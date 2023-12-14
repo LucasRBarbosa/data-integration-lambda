@@ -52,8 +52,14 @@ jobs:
       - name: Verify Assumed Role
         run: aws sts get-caller-identity
 
+      - name: Echo lambda variable 
+        run: |
+          echo "All Lambdas: ${{ needs.get-filenames.outputs.set }}"
+
       - name: Zip and Upload Code
         run: |
+          echo "All Lambdas: ${{ needs.get-filenames.outputs.set }}"
+
           for lambda in ${{ needs.get-filenames.outputs.set }}; do
             # Zip the code without including the parent directory
             cd "apps/${lambda}/" && zip -r "${lambda}.zip" .
