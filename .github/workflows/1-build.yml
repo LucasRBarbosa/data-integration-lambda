@@ -59,11 +59,10 @@ jobs:
       - name: Zip and Upload Code
         run: |
 
-          for lambda in "${{ matrix.lambda }}; do
-            # Zip the code without including the parent directory
-            cd "apps/${lambda}/" && zip -r "${lambda}.zip" .
+          for lambda in "${{ matrix.lambda }}"; do
             echo "Processing lambda: $lambda"
-            
+            # Zip the code without including the parent directory
+            cd "apps/${lambda}/" && zip -r "${lambda}.zip" . 
             # Upload to S3 with the correct path
             aws s3 cp "${lambda}.zip" "s3://s3-landing-dev-lucas/apps/${lambda}/${lambda}.zip"
             
