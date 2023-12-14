@@ -21,9 +21,13 @@ jobs:
       - name: Get functions filenames
         id: getLambdas
         run: |
-          # Use find and jq to create a JSON array of directory names
           lambdas=$(find apps -type f -name "*.py" -exec dirname {} \; | sed 's,^apps/,,')
-          echo "::set-output name=set::${lambdas}"
+          matrix="["
+          for lambda in $lambdas; do
+            matrix+="\"$lambda\","
+          done
+          matrix="${matrix%,}]"
+          echo "::set-output name=matrix::$matrix"
 
   update-code:
     permissions:
@@ -31,10 +35,10 @@ jobs:
       contents: write
       id-token: write
     needs: get-filenames
-    # strategy:
-    #   matrix:
-    #     # Use the matrix directly without needing outputs
-    #     lambda: $ {{ needs.get-filenames.outputs.set }}
+    strategy:
+      matrix:
+        # Use the matrix directly without needing outputs
+        lambda: ${{fromJson(needs.get-filenames.outputs.set)}}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -52,15 +56,10 @@ jobs:
       - name: Verify Assumed Role
         run: aws sts get-caller-identity
 
-      - name: Echo lambda variable 
-        run: |
-          echo "All Lambdas: ${{ needs.get-filenames.outputs.set }}"
-
       - name: Zip and Upload Code
         run: |
-          echo "All Lambdas: ${{ needs.get-filenames.outputs.set }}"
 
-          for lambda in ${{ needs.get-filenames.outputs.set }}; do
+          for lambda in "${{ matrix.lambda }}; do
             # Zip the code without including the parent directory
             cd "apps/${lambda}/" && zip -r "${lambda}.zip" .
             echo "Processing lambda: $lambda"
