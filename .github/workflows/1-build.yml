@@ -57,6 +57,7 @@ jobs:
           for lambda in ${{ needs.get-filenames.outputs.set }}; do
             # Zip the code without including the parent directory
             cd "apps/${lambda}/" && zip -r "${lambda}.zip" .
+            echo "Processing lambda: $lambda"
             
             # Upload to S3 with the correct path
             aws s3 cp "${lambda}.zip" "s3://s3-landing-dev-lucas/apps/${lambda}/${lambda}.zip"
