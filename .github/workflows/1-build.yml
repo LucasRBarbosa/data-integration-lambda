@@ -22,12 +22,7 @@ jobs:
         id: getLambdas
         run: |
           lambdas=$(find apps -type f -name "*.py" -exec dirname {} \; | sed 's,^apps/,,')
-          matrix="["
-          for lambda in $lambdas; do
-            matrix+="\"$lambda\","
-          done
-          matrix="${matrix%,}]"
-          echo "::set-output name=matrix::$matrix"
+          echo "::set-output name=matrix::${lambdas}"
 
   update-code:
     permissions:
