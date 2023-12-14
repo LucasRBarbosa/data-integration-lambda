@@ -67,4 +67,12 @@ jobs:
             cd ../..
           done
 
+      - name: Running CHMOD to deploy script
+        run: |
+          chmod +x ./build.sh
+  
+      - name: Deploy Lambda Functions
+        run: |
+          bash ./build.sh
+
                     
