@@ -1,0 +1,70 @@
+name: 1-build-pr-workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+    types: [opened, synchronize]
+  push:
+    branches:
+      - '*'
+
+jobs:
+  get-filenames:
+    runs-on: ubuntu-latest
+    outputs:
+      # Corrected syntax for matrix output
+      set: ${{ steps.getLambdas.outputs.set }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Get functions filenames
+        id: getLambdas
+        run: |
+          # Use find and jq to create a JSON array of directory names
+          lambdas=$(find apps -type f -name "*.py" -exec dirname {} \; | sed 's,^apps/,,')
+          echo "::set-output name=set::${lambdas}"
+
+  update-code:
+    permissions:
+      actions: write
+      contents: write
+      id-token: write
+    needs: get-filenames
+    # strategy:
+    #   matrix:
+    #     # Use the matrix directly without needing outputs
+    #     lambda: $ {{ needs.get-filenames.outputs.set }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Get AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{secrets.ROLE_ARN}}
+          aws-region: us-east-1
+
+      # - name: List variables
+      #   run: echo "$ {{ matrix.lambda }}"
+
+      - name: Verify Assumed Role
+        run: aws sts get-caller-identity
+
+      - name: Zip and Upload Code
+        run: |
+          for lambda in ; do
+            # Zip the code without including the parent directory
+            cd "apps/${lambda}/" && zip -r "${lambda}.zip" .
+            
+            # Upload to S3 with the correct path
+            aws s3 cp "${lambda}.zip" "s3://s3-landing-dev-lucas/apps/${lambda}/${lambda}.zip"
+            
+            # Optional: Remove the local zip file if needed
+            rm "${lambda}.zip"
+
+            cd ../..
+          done
+
+                    

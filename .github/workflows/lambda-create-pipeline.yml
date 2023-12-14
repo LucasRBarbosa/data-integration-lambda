@@ -1,0 +1,23 @@
+name: 'lambda-create-pipeline'
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create-lambda:
+    name: Create Lambda Skeleton to AWS
+    runs-on: ubuntu-latest
+    # These permissions are needed to interact with GitHub's OIDC Token endpoint.
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{secrets.ROLE_ARN}}
+          aws-region: us-east-1
+      - name: Verify Assumed Role
+        run: aws sts get-caller-identity

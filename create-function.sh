@@ -13,7 +13,7 @@ HANDLER="index.handler"
 RUNTIME="python3.8"
 
 # Set the role ARN
-ROLE_ARN="arn:aws:iam::581577752758:role/service-role/GetStartedLambdaIntegrationRole"
+ROLE_ARN=""
 
 # Set the function code directory
 FUNCTION_DIR="$(pwd)/apps/_demo-hello-world/HelloWorld.zip"
