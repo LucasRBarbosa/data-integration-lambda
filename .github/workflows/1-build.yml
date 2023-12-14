@@ -78,7 +78,7 @@ jobs:
           ls -al
           
           # Upload to S3 with the correct path
-          aws s3 "cp testing.zip" "s3://s3-landing-dev-lucas//functions/testing/testing.zip"
+          aws s3 cp "testing.zip" "s3://s3-landing-dev-lucas//functions/testing/testing.zip"
           
           # Optional: Remove the local zip file if needed
           rm "testing.zip"
