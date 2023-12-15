@@ -1,10 +1,6 @@
 #!/bin/bash
 
-# Get the list of all apps directories
-apps=$(find apps -type f -name "*.py" -exec dirname {} \; | sed 's,^apps/,,')
-# Loop through each app directory
-
-for app in $apps; do
+git fetch --prune --unshallow
 
 current_ref=$(echo $GITHUB_REF | sed 's/refs\/heads\///')
 
@@ -12,6 +8,12 @@ current_ref=$(echo $GITHUB_REF | sed 's/refs\/heads\///')
 if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
   current_ref=$(jq -r .pull_request.base.ref "$GITHUB_EVENT_PATH")
 fi
+
+# Get the list of all apps directories
+apps=$(find apps -type f -name "*.py" -exec dirname {} \; | sed 's,^apps/,,')
+# Loop through each app directory
+
+for app in $apps; do
 
 echo "apps/$app"
 
