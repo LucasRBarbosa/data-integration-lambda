@@ -3,7 +3,10 @@
 # Get the list of all apps directories
 apps=$(find apps -type f -name "*.py" -exec dirname {} \; | sed 's,^apps/,,')
 # Loop through each app directory
+
 for app in $apps; do
+
+echo "apps/$app"
 
   # Check if the app directory has any changes
   if [ -n "$(git diff --name-only "apps/$app" | grep "apps/$app")" ]; then
