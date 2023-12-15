@@ -1,19 +1,24 @@
-lambdas=$(find apps -type f -name "*.py" -exec dirname {} \; | sed 's,^apps/,,')
+#!/bin/bash
 
-for lambda in $lambdas; do
-  echo "Processing lambda: $lambda"
+# Get the list of all apps directories
+apps=$(find apps -type f -name "*.py" -exec dirname {} \; | sed 's,^apps/,,')
+# Loop through each app directory
+for app in $apps; do
 
-  # Zip the code without including the parent directory
-  cd "apps/${lambda}/" && zip -r "${lambda}.zip" .
+  # Check if the app directory has any changes
+  if [ -n "$(git diff --name-only "apps/$app" | grep "apps/$app")" ]; then
 
-  # Output the content of the zip file for debugging
-  unzip -l "${lambda}.zip"
+    echo "Zipping $app"
+    cd "apps/$app/" && zip -r "${app}_$(date +"%Y%m%d%H%M").zip" .
 
-  # Upload to S3 with the correct path
-  aws s3 cp "${lambda}.zip" "s3://s3-landing-dev-lucas/apps/${lambda}/${lambda}.zip"
+    echo "Uploading $app.zip to S3"
+    aws s3 rm "s3://s3-landing-dev-lucas/apps/${app}/*"
 
-  # Optional: Remove the local zip file if needed
-  rm "${lambda}.zip"
+    aws s3 cp "${app}_$(date +"%Y%m%d%H%M").zip" "s3://s3-landing-dev-lucas/apps/${app}/${app}_$(date +"%Y%m%d%H%M").zip"
 
-  cd ../..
+    rm "${app}.zip"
+
+    cd ../..
+  fi
+
 done
