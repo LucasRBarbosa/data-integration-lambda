@@ -24,7 +24,7 @@ echo "apps/$app"
     cd "apps/$app/" && zip -r "${app}_$(date +"%Y%m%d%H%M").zip" .
 
     echo "Uploading $app.zip to S3"
-    aws s3 rm "s3://s3-landing-dev-lucas/apps/${app}/*" --recursive --include "*"
+    aws s3 rm "s3://s3-landing-dev-lucas/apps/${app}" --recursive --include "*"
 
     aws s3 cp "${app}_$(date +"%Y%m%d%H%M").zip" "s3://s3-landing-dev-lucas/apps/${app}/${app}_$(date +"%Y%m%d%H%M").zip"
 
