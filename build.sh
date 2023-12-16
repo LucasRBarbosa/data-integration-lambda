@@ -9,6 +9,8 @@ if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
   current_ref=$(jq -r .pull_request.base.ref "$GITHUB_EVENT_PATH")
 fi
 
+echo "Current REF Branch$current_ref"
+
 # Get the list of all apps directories
 apps=$(find apps -type f -name "*.py" -exec dirname {} \; | sed 's,^apps/,,')
 # Loop through each app directory
