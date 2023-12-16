@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - main
-    types: [opened, synchronize]
+    types: [closed]
   push:
     branches:
       - '*'
@@ -21,9 +21,8 @@ jobs:
       - name: Get functions filenames
         id: getLambdas
         run: |
-          # Use find and jq to create a JSON array of directory names
           lambdas=$(find apps -type f -name "*.py" -exec dirname {} \; | sed 's,^apps/,,')
-          echo "::set-output name=set::${lambdas}"
+          echo "::set-output name=matrix::${lambdas}"
 
   update-code:
     permissions:
@@ -32,9 +31,9 @@ jobs:
       id-token: write
     needs: get-filenames
     # strategy:
-    #   matrix:
-    #     # Use the matrix directly without needing outputs
-    #     lambda: $ {{ needs.get-filenames.outputs.set }}
+      # matrix:
+      #   # Use the matrix directly without needing outputs
+      #   lambda: $ {{fromJson(needs.get-filenames.outputs.set)}}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -52,19 +51,28 @@ jobs:
       - name: Verify Assumed Role
         run: aws sts get-caller-identity
 
-      - name: Zip and Upload Code
-        run: |
-          for lambda in ; do
-            # Zip the code without including the parent directory
-            cd "apps/${lambda}/" && zip -r "${lambda}.zip" .
-            
-            # Upload to S3 with the correct path
-            aws s3 cp "${lambda}.zip" "s3://s3-landing-dev-lucas/apps/${lambda}/${lambda}.zip"
-            
-            # Optional: Remove the local zip file if needed
-            rm "${lambda}.zip"
+      # - name: Zip and Upload Code
+      #   run: |
 
-            cd ../..
-          done
+      #     for lambda in "$ {{ matrix.lambda }}"; do
+      #       echo "Processing lambda: $lambda"
+      #       # Zip the code without including the parent directory
+      #       cd "apps/${lambda}/" && zip -r "${lambda}.zip" . 
+      #       # Upload to S3 with the correct path
+      #       aws s3 cp "${lambda}.zip" "s3://s3-landing-dev-lucas/apps/${lambda}/${lambda}.zip"
+            
+      #       # Optional: Remove the local zip file if needed
+      #       rm "${lambda}.zip"
+
+      #       cd ../..
+      #     done
+
+      - name: Running CHMOD to deploy script
+        run: |
+          chmod +x ./build.sh
+  
+      - name: Deploy Lambda Functions
+        run: |
+          bash ./build.sh
 
                     
