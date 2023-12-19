@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - main
-    types: [closed]
+    types: [closed, opened, synchronize]
   push:
     branches:
       - '*'
@@ -13,7 +13,6 @@ jobs:
   get-filenames:
     runs-on: ubuntu-latest
     outputs:
-      # Corrected syntax for matrix output
       set: ${{ steps.getLambdas.outputs.set }}
     steps:
       - name: Checkout repository
@@ -30,10 +29,6 @@ jobs:
       contents: write
       id-token: write
     needs: get-filenames
-    # strategy:
-      # matrix:
-      #   # Use the matrix directly without needing outputs
-      #   lambda: $ {{fromJson(needs.get-filenames.outputs.set)}}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -45,27 +40,12 @@ jobs:
           role-to-assume: ${{secrets.ROLE_ARN}}
           aws-region: us-east-1
 
-      # - name: List variables
-      #   run: echo "$ {{ matrix.lambda }}"
-
       - name: Verify Assumed Role
         run: aws sts get-caller-identity
 
-      # - name: Zip and Upload Code
-      #   run: |
-
-      #     for lambda in "$ {{ matrix.lambda }}"; do
-      #       echo "Processing lambda: $lambda"
-      #       # Zip the code without including the parent directory
-      #       cd "apps/${lambda}/" && zip -r "${lambda}.zip" . 
-      #       # Upload to S3 with the correct path
-      #       aws s3 cp "${lambda}.zip" "s3://s3-landing-dev-lucas/apps/${lambda}/${lambda}.zip"
-            
-      #       # Optional: Remove the local zip file if needed
-      #       rm "${lambda}.zip"
-
-      #       cd ../..
-      #     done
+      - name: Set Timestamp for Tag
+        id: set-timestamp
+        run: echo "TIMESTAMP=$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
 
       - name: Running CHMOD to deploy script
         run: |
@@ -73,6 +53,6 @@ jobs:
   
       - name: Deploy Lambda Functions
         run: |
-          bash ./build.sh
+          bash ./build.sh ${{ env.TIMESTAMP }}
 
                     
