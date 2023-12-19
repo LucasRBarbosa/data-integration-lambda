@@ -38,8 +38,6 @@ echo "apps/$app"
 
     cd ../..
 
-    if 
-
   fi
 
 done
