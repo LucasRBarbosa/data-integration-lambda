@@ -48,6 +48,10 @@ jobs:
         id: set-timestamp
         run: echo "TIMESTAMP=$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
 
+      - name: Debug Changes
+        run: |
+          git diff --name-only origin/$GITHUB_BASE_REF..origin/$GITHUB_HEAD_REF
+
       - name: Running CHMOD to build & deploy script
         run: |
           chmod +x ./build.sh
