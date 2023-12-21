@@ -1,9 +1,7 @@
 name: 'lambda-create-pipeline'
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   create-lambda:
