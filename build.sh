@@ -13,10 +13,8 @@ if [ "$2" == "LOCAL" ]; then
   head_ref="bug/correct-build-script"
 else
   # GitHub Actions environment variables
-  if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
-    base_ref=$(jq -r .pull_request.base.ref "$GITHUB_EVENT_PATH")
-    head_ref=$(jq -r .pull_request.head.ref "$GITHUB_EVENT_PATH")
-  fi
+  base_ref="$GITHUB_BASE_REF"
+  head_ref="$GITHUB_HEAD_REF"
 fi
 
 # Fetch changes from both branches
