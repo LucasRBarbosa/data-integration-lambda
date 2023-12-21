@@ -50,7 +50,12 @@ jobs:
 
       - name: Debug Changes
         run: |
-          git diff --name-only origin/$GITHUB_BASE_REF..origin/$GITHUB_HEAD_REF
+          echo "GITHUB_BASE_REF: $GITHUB_BASE_REF"
+          echo "GITHUB_HEAD_REF: $GITHUB_HEAD_REF"
+          git fetch origin $GITHUB_BASE_REF
+          git fetch origin $GITHUB_HEAD_REF
+          git branch
+
 
       - name: Running CHMOD to build & deploy script
         run: |
