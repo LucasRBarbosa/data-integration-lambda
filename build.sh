@@ -30,7 +30,7 @@ for app in $apps; do
 echo "apps/$app"
 
   # Check if the app directory has any changes
-  if [ -n "$(git diff --name-only origin/$base_ref..origin/$head_ref "apps/$app"  | grep "apps/$app")" ]; then
+  if [ -n "$(git diff --name-only origin/$base_ref...origin/$head_ref "apps/$app"  | grep "apps/$app")" ]; then
 
     echo "Zipping $app"
     cd "apps/$app/" && zip -r "${app}_${timestamp}.zip" .
