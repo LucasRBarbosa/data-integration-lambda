@@ -1,14 +1,22 @@
 #!/bin/bash
 
-git fetch --prune --unshallow
+# git fetch --prune --unshallow
 
 # Store the timestamp in a variable
 timestamp="$1" 
 
-# Check if it's a pull request and get the associated branch
-if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
-  base_ref=$(jq -r .pull_request.base.ref "$GITHUB_EVENT_PATH")
-  head_ref=$(jq -r .pull_request.head.ref "$GITHUB_EVENT_PATH")
+# Check if it's a pull request and get the associated branch. Check if the local flag is provided
+if [ "$2" == "LOCAL" ]; then
+  echo "Running in local mode"
+
+  base_ref="main" 
+  head_ref="bug/correct-build-script"
+else
+  # GitHub Actions environment variables
+  if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+    base_ref=$(jq -r .pull_request.base.ref "$GITHUB_EVENT_PATH")
+    head_ref=$(jq -r .pull_request.head.ref "$GITHUB_EVENT_PATH")
+  fi
 fi
 
 # Fetch changes from both branches
@@ -33,6 +41,9 @@ echo "apps/$app"
     # aws s3 rm "s3://s3-landing-dev-lucas/apps/${app}" --recursive --include "*"
 
     aws s3 cp "${app}_${timestamp}.zip" "s3://s3-landing-dev-lucas/apps/${app}/${app}_${timestamp}.zip"
+
+    # Log the name of the synced file
+    echo "Updated: ${app}_${timestamp}.zip" >> ../../changed_files.log
 
     rm "${app}_${timestamp}.zip"
 

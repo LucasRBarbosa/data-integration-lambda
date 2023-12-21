@@ -23,7 +23,7 @@ jobs:
           lambdas=$(find apps -type f -name "*.py" -exec dirname {} \; | sed 's,^apps/,,')
           echo "::set-output name=matrix::${lambdas}"
 
-  update-code:
+  build-deploy:
     permissions:
       actions: write
       contents: write
@@ -31,6 +31,9 @@ jobs:
     needs: get-filenames
     runs-on: ubuntu-latest
     steps:
+      - name: Set ENV_FLAG variable
+        run: echo "ENV_FLAG=PROD" >> $GITHUB_ENV
+
       - name: Checkout repository
         uses: actions/checkout@v3
 
@@ -47,12 +50,19 @@ jobs:
         id: set-timestamp
         run: echo "TIMESTAMP=$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
 
-      - name: Running CHMOD to deploy script
+      - name: Running CHMOD to build & deploy script
         run: |
           chmod +x ./build.sh
+          chmod +x ./deploy.sh
+  
+      - name: Build Lambda Functions
+        run: |
+          bash ./build.sh ${{ env.TIMESTAMP }} ${{ env.ENV_FLAG }}
+
+      - name: Set Synced Files Output
+        run: echo "FILES_SYNCED=$(cat changed_files.log)" >> $GITHUB_ENV
+        if: always()
   
       - name: Deploy Lambda Functions
         run: |
-          bash ./build.sh ${{ env.TIMESTAMP }}
-
-                    
+          bash ./deploy.sh ${{ env.TIMESTAMP }} 
