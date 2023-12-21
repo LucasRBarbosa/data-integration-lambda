@@ -13,8 +13,10 @@ if [ "$2" == "LOCAL" ]; then
   head_ref="bug/correct-build-script"
 else
   # GitHub Actions environment variables
-  base_ref="$GITHUB_BASE_REF"
-  head_ref="$GITHUB_HEAD_REF"
+  if [[ "$GITHUB_EVENT_NAME" == "pull_request" ]]; then
+    base_ref=$(jq -r .pull_request.base.ref "$GITHUB_EVENT_PATH")
+    head_ref=$(jq -r .pull_request.head.ref "$GITHUB_EVENT_PATH")
+  fi
 fi
 
 # Fetch changes from both branches
@@ -30,7 +32,7 @@ for app in $apps; do
 echo "apps/$app"
 
   # Check if the app directory has any changes
-  if [ -n "$(git diff --name-only origin/$base_ref...origin/$head_ref "apps/$app"  | grep "apps/$app")" ]; then
+  if [ -n "$(git diff --name-only origin/$base_ref..origin/$head_ref "apps/$app"  | grep "apps/$app")" ]; then
 
     echo "Zipping $app"
     cd "apps/$app/" && zip -r "${app}_${timestamp}.zip" .

@@ -4,8 +4,7 @@ on:
   pull_request:
     branches:
       - main
-    types: [closed]
-
+    types: [opened, synchronize]
 
 jobs:
   get-filenames:
@@ -47,15 +46,6 @@ jobs:
       - name: Set Timestamp for Tag
         id: set-timestamp
         run: echo "TIMESTAMP=$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
-
-      - name: Debug Changes
-        run: |
-          echo "GITHUB_BASE_REF: $GITHUB_BASE_REF"
-          echo "GITHUB_HEAD_REF: $GITHUB_HEAD_REF"
-          git fetch origin $GITHUB_BASE_REF
-          git fetch origin $GITHUB_HEAD_REF
-          git branch
-
 
       - name: Running CHMOD to build & deploy script
         run: |
