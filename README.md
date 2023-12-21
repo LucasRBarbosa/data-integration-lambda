@@ -2,6 +2,12 @@
 A basic data-integration respository that uses lambda as means of building a event mechanism for ingesting data.
 
 
+# How the CICD Works?
+
+## If the function doesnt exists:
+It ignores the update process.
+
+
 # Could we use SAM for deploying the Function?
 Yes, we can do that. This is how we would do it:
 
